@@ -8,6 +8,11 @@ import TaskCard from '@/components/TaskCard';
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
   const handleAddTask = (task: Task): void => {
     setTasks((prev) => [...prev, task]);
   };
@@ -26,6 +31,29 @@ export default function Home() {
 
   return (
     <main className="flex flex-col md:flex-row gap-4 p-4">
+
+
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow-md w-full max-w-md relative">
+            <button
+              onClick={handleCloseModal}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+
+            <TaskForm
+              onAdd={(task) => {
+                handleAddTask(task);
+                handleCloseModal();
+              }}
+            />
+          </div>
+        </div>
+      )}
+
       {/* タスク一覧 */}
       <div className="md:w-2/3 w-full space-y-4">
         <TaskForm onAdd={handleAddTask} />
@@ -37,6 +65,12 @@ export default function Home() {
             onDelete={handleDeleteTask}
           />
         ))}
+        <button
+          onClick={handleOpenModal}
+          className="relative p-4 bg-white rounded shadow border hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center gap-2 text-blue-600"
+        >
+          ＋追加
+        </button>
       </div>
 
       {/* カレンダー（PCだけ表示） */}
